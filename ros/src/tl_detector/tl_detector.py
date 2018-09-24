@@ -151,7 +151,7 @@ class TLDetector(object):
         # List of positions that correspond to the line to stop in front of for a given intersection
         stop_line_positions = self.config['stop_line_positions']
         if(self.pose):
-            car_position = self.get_closest_waypoint(self.pose.pose.position.x,self.pose.pose.position.y)
+            car_wp_idx = self.get_closest_waypoint(self.pose.pose.position.x,self.pose.pose.position.y)
 
             #TODO find the closest visible traffic light (if one exists)
             diff = len(self.waypoints.waypoints)
@@ -159,20 +159,23 @@ class TLDetector(object):
                 #Get stop line waypont idx
                 line = stop_line_positions[i]
                 #rospy.loginfo('!!!!!***Line: %s', line[0])
-                temp_wd_idx = self.get_closest_waypoint(line[0],line[1])
+                temp_wp_idx = self.get_closest_waypoint(line[0],line[1])
                 
                 #Find closest stop line waypoint index
-                d = temp_wd_idx - car_position
+                d = temp_wp_idx - car_wp_idx
+                #rospy.loginfo("temp_wp_idx - car_wp_idx= %s",d)
 
                 if d >= 0 and d < diff:
                     diff = d
+                    #rospy.loginfo("diff: %s",diff)
                     closest_light = light
-                    line_wp_idx = temp_wd_idx
+                    line_wp_idx = temp_wp_idx
 
 
-        if light:
-            state = self.get_light_state(light)
-            return light, state
+        if closest_light:
+            state = self.get_light_state(closest_light)
+            rospy.loginfo("State of light: %s", state)
+            return line_wp_idx, state
 
         #self.waypoints = None
         return -1, TrafficLight.UNKNOWN
