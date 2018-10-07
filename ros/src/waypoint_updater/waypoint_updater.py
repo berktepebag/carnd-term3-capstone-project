@@ -24,8 +24,8 @@ as well as to verify your TL classifier.
 TODO (for Yousuf and Aaron): Stopline location for each traffic light.
 '''
 
-LOOKAHEAD_WPS = 200 # Number of waypoints we will publish. You can change this number
-MAX_DECEL = 10 # m/s2
+LOOKAHEAD_WPS = 100 # Number of waypoints we will publish. You can change this number
+MAX_DECEL = 4 # m/s2
 
 class WaypointUpdater(object):
     def __init__(self):
@@ -115,9 +115,8 @@ class WaypointUpdater(object):
             p = Waypoint()
             p.pose = wp.pose
           
-            stop_idx = max(self.stopline_wp_idx - closest_idx - 2, 0) # Car is 2 wp long
-            #stop_idx = max(300 - closest_idx -2, 0)
-            
+            stop_idx = max(self.stopline_wp_idx - closest_idx - 5, 0) # Car is 5 wp long
+                       
             dist = self.distance(base_waypoints, i, stop_idx)
 
             # https://physics.stackexchange.com/questions/3818/stopping-distance-frictionless
